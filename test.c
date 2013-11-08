@@ -16,6 +16,27 @@ static inline void atomic_inc(atomic_t *a)
 	__sync_fetch_and_add(&a->counter, 1);
 }
 
+#ifdef __sparc__
+static inline unsigned long cmpxchg_u32(volatile int *m, int old, int new)
+{
+	__asm__ __volatile__("cas [%2], %3, %0"
+			     : "=&r" (new)
+			     : "" (new), "r" (m), "r" (old)
+			     : "memory");
+	return new;
+}
+
+static inline unsigned long atomic_cmpxchg(atomic_t *a, int old, int new)
+{
+	return cmpxchg_u32(&atomic->counter, old, new);
+}
+#else
+static inline unsigned long atomic_cmpxchg(atomic_t *a, int old, int new)
+{
+	return __sync_val_compare_and_swap(&a->counter, old, new);
+}
+#endif
+
 static unsigned long ops = 1 << 19;
 static unsigned long n_threads;
 static atomic_t val;
@@ -25,7 +46,7 @@ static void *thread(void *args)
 	unsigned long i;
 
 	for (i = 0; i < ops; i++)
-		atomic_inc(&val);
+		atomic_cmpxchg(&val, 0, 0);
 
 	return NULL;
 }
