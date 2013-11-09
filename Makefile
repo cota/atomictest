@@ -17,6 +17,15 @@ plot.png: plot.plt plot.dat
 plot.txt: plot.plt plot.dat
 	gnuplot -e "set term dumb" $< > $@
 
+embedded.dat: data_embedded.sh test
+	./$< > $@
+
+embedded.png: embedded.plt embedded.dat
+	gnuplot -e "set term png" $< > $@
+
+embedded.txt: embedded.plt embedded.dat
+	gnuplot -e "set term dumb" $< > $@
+
 plot: plot.png
 
 .PHONY: plot
