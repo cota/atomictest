@@ -12,6 +12,12 @@ runs the test for several numbers of threads.
     $ make plot.png plot.txt
 plots the data from `plot.dat`.
 
+Embedded version
+----------------
+If your system does not have perl, try the embedded version
+with `$ make embedded.dat` (and postprocess with `$ make embedded.png`.
+Note that this version does not calculate error bars.
+
 TODO
 ----
 Add more tests for atomic operations, e.g. test and set.
