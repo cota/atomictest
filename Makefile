@@ -5,6 +5,9 @@ LIBS = -lpthread
 
 all: test
 
+%.o: %.c
+	$(CROSS_COMPILE)$(CC) -c $(CFLAGS) $< -o $@
+
 test: test.o
 	$(CROSS_COMPILE)$(CC) -o $@ $< $(LIBS)
 
